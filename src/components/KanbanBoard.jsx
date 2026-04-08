@@ -3,10 +3,10 @@ import { useGithub } from "../context/GithubContext";
 import "./KanbanBoard.css";
 
 const COLUMNS = [
-  { id: "todo", label: "To Do", color: "#8b949e", icon: "○" },
+  { id: "todo",        label: "To Do",       color: "#8b949e", icon: "○" },
   { id: "in-progress", label: "In Progress", color: "#388bfd", icon: "◑" },
-  { id: "review", label: "In Review", color: "#d29922", icon: "◐" },
-  { id: "done", label: "Done", color: "#3fb950", icon: "●" },
+  { id: "review",      label: "In Review",   color: "#d29922", icon: "◐" },
+  { id: "done",        label: "Done",        color: "#3fb950", icon: "●" },
 ];
 
 const LANG_COLORS = {
@@ -14,6 +14,12 @@ const LANG_COLORS = {
   Rust: "#dea584", Go: "#00ADD8", Java: "#b07219", Ruby: "#701516",
   "C++": "#f34b7d", C: "#555555", HTML: "#e34c26", CSS: "#563d7c",
   Shell: "#89e051", Unknown: "#8b949e",
+};
+
+const PRIORITY_STYLE = {
+  high:   { bg: "rgba(248,81,73,0.15)",  color: "var(--accent-red)"    },
+  medium: { bg: "rgba(210,153,34,0.15)", color: "var(--accent-orange)" },
+  low:    { bg: "rgba(56,139,253,0.15)", color: "var(--accent-blue)"   },
 };
 
 export default function KanbanBoard() {
@@ -24,13 +30,10 @@ export default function KanbanBoard() {
   const [filter, setFilter] = useState("all");
   const dragNode = useRef(null);
 
-  const getByCol = (col) => kanbanProjects.filter(p => {
-    const matchCol = p.status === col;
-    const matchFilter = filter === "all" || p.priority === filter;
-    return matchCol && matchFilter;
-  });
+  const getByCol = (col) => kanbanProjects.filter(p =>
+    p.status === col && (filter === "all" || p.priority === filter)
+  );
 
-  // Drag handlers
   const handleDragStart = (e, card) => {
     setDragCard(card);
     dragNode.current = e.target;
@@ -43,16 +46,9 @@ export default function KanbanBoard() {
     setDragCard(null); setDragOver(null); dragNode.current = null;
   };
 
-  const handleDragOver = (e, colId) => {
-    e.preventDefault(); e.dataTransfer.dropEffect = "move";
-    setDragOver(colId);
-  };
-
   const handleDrop = (e, colId) => {
     e.preventDefault();
-    if (dragCard && dragCard.status !== colId) {
-      updateKanbanProject(dragCard.id, { status: colId });
-    }
+    if (dragCard && dragCard.status !== colId) updateKanbanProject(dragCard.id, { status: colId });
     setDragOver(null); setDragCard(null);
   };
 
@@ -66,11 +62,9 @@ export default function KanbanBoard() {
           </div>
           <div className="kanban-filters">
             {["all", "high", "medium", "low"].map(f => (
-              <button
-                key={f}
+              <button key={f}
                 className={`filter-pill ${filter === f ? "active" : ""} ${f !== "all" ? `filter-${f}` : ""}`}
-                onClick={() => setFilter(f)}
-              >
+                onClick={() => setFilter(f)}>
                 {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
               </button>
             ))}
@@ -82,13 +76,11 @@ export default function KanbanBoard() {
         {COLUMNS.map(col => {
           const cards = getByCol(col.id);
           return (
-            <div
-              key={col.id}
+            <div key={col.id}
               className={`kanban-column ${dragOver === col.id ? "drag-over" : ""}`}
-              onDragOver={e => handleDragOver(e, col.id)}
+              onDragOver={e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setDragOver(col.id); }}
               onDragLeave={() => setDragOver(null)}
-              onDrop={e => handleDrop(e, col.id)}
-            >
+              onDrop={e => handleDrop(e, col.id)}>
               <div className="column-header">
                 <div className="column-title">
                   <span className="col-icon" style={{ color: col.color }}>{col.icon}</span>
@@ -98,17 +90,12 @@ export default function KanbanBoard() {
                   {cards.length}
                 </span>
               </div>
-
               <div className={`column-cards ${dragOver === col.id ? "drop-zone" : ""}`}>
                 {cards.length === 0 && (
-                  <div className={`empty-drop ${dragOver === col.id ? "visible" : ""}`}>
-                    Drop here
-                  </div>
+                  <div className={`empty-drop ${dragOver === col.id ? "visible" : ""}`}>Drop here</div>
                 )}
                 {cards.map(card => (
-                  <KanbanCard
-                    key={card.id}
-                    card={card}
+                  <KanbanCard key={card.id} card={card}
                     onDragStart={e => handleDragStart(e, card)}
                     onDragEnd={handleDragEnd}
                     onEdit={() => setEditCard(card)}
@@ -122,9 +109,8 @@ export default function KanbanBoard() {
       </div>
 
       {editCard && (
-        <EditCardModal
-          card={editCard}
-          onSave={(updates) => { updateKanbanProject(editCard.id, updates); setEditCard(null); }}
+        <EditCardModal card={editCard}
+          onSave={updates => { updateKanbanProject(editCard.id, updates); setEditCard(null); }}
           onClose={() => setEditCard(null)}
         />
       )}
@@ -134,18 +120,10 @@ export default function KanbanBoard() {
 
 function KanbanCard({ card, onDragStart, onDragEnd, onEdit, onRemove }) {
   const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <div
-      className="kanban-card"
-      draggable
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-    >
+    <div className="kanban-card" draggable onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <div className="card-header">
-        <a href={card.url} target="_blank" rel="noopener noreferrer" className="card-name">
-          {card.name}
-        </a>
+        <a href={card.url} target="_blank" rel="noopener noreferrer" className="card-name">{card.name}</a>
         <div className="card-menu-wrapper">
           <button className="card-menu-btn" onClick={() => setMenuOpen(o => !o)}>⋯</button>
           {menuOpen && (
@@ -156,11 +134,9 @@ function KanbanCard({ card, onDragStart, onDragEnd, onEdit, onRemove }) {
           )}
         </div>
       </div>
-
       {card.description && (
         <p className="card-desc">{card.description.slice(0, 80)}{card.description.length > 80 ? "…" : ""}</p>
       )}
-
       <div className="card-footer">
         <div className="card-meta">
           {card.language && (
@@ -178,8 +154,8 @@ function KanbanCard({ card, onDragStart, onDragEnd, onEdit, onRemove }) {
 }
 
 function EditCardModal({ card, onSave, onClose }) {
-  const [priority, setPriority] = useState(card.priority);
-  const [status, setStatus] = useState(card.status);
+  const [priority, setPriority]       = useState(card.priority);
+  const [status, setStatus]           = useState(card.status);
   const [description, setDescription] = useState(card.description);
 
   return (
@@ -189,19 +165,16 @@ function EditCardModal({ card, onSave, onClose }) {
           <h2 style={{ fontFamily: "var(--font-mono)", fontSize: 14 }}>{card.name}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
-
         <div className="form-group">
           <label>Description</label>
           <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} />
         </div>
-
         <div className="form-group">
           <label>Status</label>
           <select value={status} onChange={e => setStatus(e.target.value)}>
             {COLUMNS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         </div>
-
         <div className="form-group">
           <label>Priority</label>
           <div style={{ display: "flex", gap: 8 }}>
@@ -210,20 +183,18 @@ function EditCardModal({ card, onSave, onClose }) {
                 className={`priority-btn ${priority === p ? "selected" : ""} priority-${p}`}
                 onClick={() => setPriority(p)}
                 style={{
-                  flex: 1, padding: "7px", border: "1px solid var(--border)",
-                  borderRadius: "var(--radius)", background: priority === p ? getPriorityBg(p) : "var(--bg-surface)",
-                  color: priority === p ? getPriorityColor(p) : "var(--text-secondary)",
-                  borderColor: priority === p ? getPriorityColor(p) : "var(--border)",
-                  cursor: "pointer", fontFamily: "var(--font-sans)", fontSize: 13,
-                  transition: "all 0.2s",
-                }}
-              >
+                  flex: 1, padding: "7px",
+                  border: `1px solid ${priority === p ? PRIORITY_STYLE[p].color : "var(--border)"}`,
+                  borderRadius: "var(--radius)",
+                  background: priority === p ? PRIORITY_STYLE[p].bg : "var(--bg-surface)",
+                  color: priority === p ? PRIORITY_STYLE[p].color : "var(--text-secondary)",
+                  cursor: "pointer", fontFamily: "var(--font-sans)", fontSize: 13, transition: "all 0.2s",
+                }}>
                 {p.charAt(0).toUpperCase() + p.slice(1)}
               </button>
             ))}
           </div>
         </div>
-
         <div className="form-actions">
           <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
           <button className="btn btn-primary" onClick={() => onSave({ priority, status, description })}>Save Changes</button>
@@ -231,15 +202,4 @@ function EditCardModal({ card, onSave, onClose }) {
       </div>
     </div>
   );
-}
-
-function getPriorityBg(p) {
-  if (p === "high") return "rgba(248,81,73,0.15)";
-  if (p === "medium") return "rgba(210,153,34,0.15)";
-  return "rgba(56,139,253,0.15)";
-}
-function getPriorityColor(p) {
-  if (p === "high") return "var(--accent-red)";
-  if (p === "medium") return "var(--accent-orange)";
-  return "var(--accent-blue)";
 }
