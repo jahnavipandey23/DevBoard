@@ -1,16 +1,31 @@
-# React + Vite
+# DevBoard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DevBoard is a modern developer dashboard that helps users manage GitHub repositories as projects in one centralized platform. It combines GitHub repository insights with a Kanban-style project tracker, making it easier to organize, prioritize, and monitor project workflows efficiently.
 
-Currently, two official plugins are available:
+## 🚀 Features
+- GitHub integration using Personal Access Token
+- Fetch repository details directly via GitHub API
+- Add repositories as projects to Kanban board
+- Set priority levels: High, Medium, Low
+- Track project status:
+  - To Do
+  - In Progress
+  - In Review
+  - Completed
+- Clean and user-friendly dashboard interface
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 💡 Problem It Solves
+Developers often manage repositories and tasks separately, which makes workflow tracking difficult. DevBoard brings both together into one platform, helping users prioritize tasks and complete projects more efficiently.
 
-## React Compiler
+## 🛠 Tech Stack
+- React.js
+- HTML5
+- CSS3
+- GitHub API
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ⚙️ How It Works
+1. User logs into DevBoard.
+2. Enters GitHub Personal Access Token.
+3. Repositories are fetched using GitHub API.
+4. Selected repositories are added to the Kanban board.
+5. Users assign priorities and update project status.
