@@ -100,10 +100,6 @@ export default function Landing({ onLogin }) {
             >
               {success ? "✓ Welcome aboard!" : "Get started for free"}
             </button>
-            <p className="l-terms">
-              By signing up, you agree to our{" "}
-              <a href="#">Privacy Policy</a>.
-            </p>
           </div>
         </div>
       </section>
