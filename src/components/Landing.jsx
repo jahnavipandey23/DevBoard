@@ -1,129 +1,155 @@
 import { useState } from "react";
 import "./Landing.css";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
-export default function Landing({ onLogin }) {
-  const [name, setName]   = useState("");
+export default function Landing({ onLogin = () => {} }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
   const validate = () => {
     const e = {};
-    if (!name.trim())  e.name  = "Name is required";
-    if (!email.trim()) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email";
+
+    if (!name.trim()) e.name = "Name is required";
+
+    if (!email.trim()) {
+      e.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      e.email = "Enter a valid email";
+    }
+
+    if (!password.trim()) e.password = "Password is required";
+
     return e;
   };
 
   const handleSubmit = () => {
     const e = validate();
-    if (Object.keys(e).length) { setErrors(e); return; }
+
+    if (Object.keys(e).length > 0) {
+      setErrors(e);
+      return;
+    }
+
     setErrors({});
     setSuccess(true);
-    setTimeout(() => onLogin({ name, email }), 1200);
+
+    setTimeout(() => {
+      onLogin({ name, email });
+    }, 800);
   };
 
   return (
     <div className="landing">
-
       <nav className="l-nav">
         <div className="l-nav-logo">
           <div className="l-logo-mark">D</div>
           <span className="l-logo-name">DevBoard</span>
         </div>
-
-        
         <a href="#signup" className="l-nav-cta">Sign in</a>
       </nav>
 
-      {/* HERO */}
       <section className="l-hero">
         <div className="l-hero-glow" />
+
         <div className="l-hero-inner">
 
           {/* LEFT */}
           <div className="l-hero-left">
             <div className="l-badge">
               <span className="l-badge-dot" />
-              Now with Kanban &amp; live GitHub sync
+              Now with Kanban & GitHub sync
             </div>
+
             <h1 className="l-title">
-              Your dev<br />workflow,<br />
+              Your dev<br />
+              workflow,<br />
               <span className="l-title-accent">unified.</span>
             </h1>
+
             <p className="l-sub">
-              DevDash connects to your GitHub repositories and gives you a clean
-              dashboard to track, prioritize, and ship projects — without the noise.
+              DevDash helps you track and manage projects in one clean dashboard.
             </p>
-            <div className="l-chips">
-              <div className="l-chip"><span>⬡</span> GitHub repos</div>
-              <div className="l-chip"><span>▦</span> Kanban boards</div>
-              <div className="l-chip"><span>◎</span> Priority tracking</div>
-              <div className="l-chip"><span>⊞</span> Live dashboard</div>
-            </div>
           </div>
 
-
+          {/* RIGHT */}
           <div className="l-card" id="signup">
-            <div className="l-card-label">Get started</div>
-            <div className="l-card-heading">Create your account</div>
-            <div className="l-card-sub">Free forever. No credit card needed.</div>
+            <div className="l-card-heading">Create account</div>
 
+            {/* NAME */}
             <div className="l-field">
               <label>Full name</label>
               <input
-                type="text"
-                placeholder="Alex Johnson"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 className={errors.name ? "l-input-err" : ""}
               />
               {errors.name && <span className="l-err-msg">{errors.name}</span>}
             </div>
 
+            {/* EMAIL */}
             <div className="l-field">
-              <label>Email address</label>
+              <label>Email</label>
               <input
-                type="email"
-                placeholder="alex@devteam.io"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className={errors.email ? "l-input-err" : ""}
               />
               {errors.email && <span className="l-err-msg">{errors.email}</span>}
             </div>
 
+            {/* PASSWORD */}
+            <div className="l-field">
+              <label>Password</label>
+
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={errors.password ? "l-input-err" : ""}
+                  style={{ width: "100%", paddingRight: "40px" }}
+                />
+
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showPassword ? (
+                    <AiOutlineEyeInvisible />
+                  ) : (
+                    <AiOutlineEye />
+                  )}
+                </span>
+              </div>
+
+              {errors.password && (
+                <span className="l-err-msg">{errors.password}</span>
+              )}
+            </div>
+
+            {/* BUTTON */}
             <button
-              className={`l-btn-primary ${success ? "l-btn-success" : ""}`}
               onClick={handleSubmit}
               disabled={success}
+              className={`l-btn-primary ${success ? "l-btn-success" : ""}`}
             >
-              {success ? "✓ Welcome aboard!" : "Get started for free"}
+              {success ? "✓ Welcome!" : "Get started"}
             </button>
-            <p className="l-terms">
-              By signing up, you agree to our{" "}
-              <a href="#">Privacy Policy</a>.
-            </p>
+
           </div>
         </div>
       </section>
-
-
-      <div className="l-stats">
-        {[
-          { num: "12k+",  lbl: "Developers"    },
-          { num: "80k+",  lbl: "Repos tracked" },
-          { num: "99.9%", lbl: "Uptime"        },
-          { num: "4.9/5", lbl: "Avg rating"    },
-        ].map(s => (
-          <div key={s.lbl} className="l-stat">
-            <div className="l-stat-num">{s.num}</div>
-            <div className="l-stat-lbl">{s.lbl}</div>
-          </div>
-        ))}
-      </div>
-
-
     </div>
   );
 }
