@@ -34,43 +34,42 @@ export default function Sidebar({ activePage, setActivePage, onLogout }) {
         ))}
       </nav>
 
-      {/* LOGOUT */}
-      <div className="sidebar-bottom">
-        <button className="nav-item nav-logout" onClick={onLogout}>
-          <span className="nav-icon">⎋</span>
-          <span className="nav-label">Logout</span>
-        </button>
-      </div>
-
       {/* USER SECTION */}
       <div className="sidebar-user">
-        {githubUser?.avatar_url ? (
-          <img
-            src={githubUser.avatar_url}
-            alt={githubUser.login}
-            className="user-avatar"
-          />
-        ) : (
-          <div className="user-avatar-placeholder">
-            {(appUser?.name || "U")[0].toUpperCase()}
-          </div>
-        )}
-
-        <div className="user-info">
-          {/* App User Name */}
-          <span className="user-name">
-            {appUser?.name || "User"}
-          </span>
-
-          {/* GitHub Status */}
-          {githubUser ? (
-            <span className="user-handle">@{githubUser.login}</span>
+        <div className="user-profile">
+          {githubUser?.avatar_url ? (
+            <img
+              src={githubUser.avatar_url}
+              alt={githubUser.login}
+              className="user-avatar"
+            />
           ) : (
-            <span className="user-handle text-muted">
-              GitHub not connected
-            </span>
+            <div className="user-avatar-placeholder">
+              {(appUser?.name || "U")[0].toUpperCase()}
+            </div>
           )}
+
+          <div className="user-info">
+            {/* App User Name */}
+            <span className="user-name">
+              {appUser?.name || "User"}
+            </span>
+
+            {/* GitHub Status */}
+            {githubUser ? (
+              <span className="user-handle">@{githubUser.login}</span>
+            ) : (
+              <span className="user-handle text-muted">
+                GitHub not connected
+              </span>
+            )}
+          </div>
         </div>
+
+        <button className="user-logout-btn" onClick={onLogout}>
+          <span className="user-logout-icon">⎋</span>
+          <span className="user-logout-label">Logout</span>
+        </button>
       </div>
     </aside>
   );

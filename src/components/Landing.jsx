@@ -29,7 +29,7 @@ export default function Landing({ onLogin }) {
       <nav className="l-nav">
         <div className="l-nav-logo">
           <div className="l-logo-mark">D</div>
-          <span className="l-logo-name">DevDash</span>
+          <span className="l-logo-name">DevBoard</span>
         </div>
 
         
