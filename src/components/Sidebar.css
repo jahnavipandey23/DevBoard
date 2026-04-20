@@ -70,9 +70,12 @@
 .sidebar-collapse:hover { color: var(--text-secondary); background: var(--bg-hover); }
 
 .sidebar-user {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; flex-direction: column; gap: 12px;
   padding: 14px 12px;
   border-top: 1px solid var(--border-subtle);
+}
+.user-profile {
+  display: flex; align-items: center; gap: 10px;
   cursor: pointer;
 }
 .user-avatar, .user-avatar-placeholder {
@@ -95,16 +98,21 @@
   font-size: 11px; color: var(--text-muted);
   font-family: var(--font-mono);
 }
+.user-logout-btn {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: var(--radius);
+  background: none; border: 1px solid var(--border);
+  cursor: pointer; color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; font-family: var(--font-sans);
+  transition: all var(--transition);
+}
+.user-logout-btn:hover {
+  background: var(--bg-hover); border-color: var(--border-hover);
+  color: var(--text-primary);
+}
 .user-logout-icon {
-  color: var(--text-muted); font-size: 14px;
-  transition: color var(--transition);
+  font-size: 14px; width: 14px; text-align: center; flex-shrink: 0;
 }
-.sidebar-user:hover .user-logout-icon { color: var(--text-secondary); }
-.sidebar-bottom {
-  margin-top: auto;
-  padding: 16px;
-}
-
-.sidebar-bottom .btn {
-  width: 100%;
+.user-logout-label {
+  font-size: 11px; font-weight: 500; font-family: var(--font-sans);
 }
