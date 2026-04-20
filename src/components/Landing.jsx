@@ -4,6 +4,7 @@ import "./Landing.css";
 export default function Landing({ onLogin }) {
   const [name, setName]   = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(""); 
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
@@ -12,6 +13,11 @@ export default function Landing({ onLogin }) {
     if (!name.trim())  e.name  = "Name is required";
     if (!email.trim()) e.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email";
+
+    //  password validation
+    if (!password.trim()) e.password = "Password is required";
+    else if (password.length < 6) e.password = "Min 6 characters required";
+
     return e;
   };
 
@@ -20,7 +26,7 @@ export default function Landing({ onLogin }) {
     if (Object.keys(e).length) { setErrors(e); return; }
     setErrors({});
     setSuccess(true);
-    setTimeout(() => onLogin({ name, email }), 1200);
+    setTimeout(() => onLogin({ name, email, password }), 1200); // include password
   };
 
   return (
@@ -31,17 +37,13 @@ export default function Landing({ onLogin }) {
           <div className="l-logo-mark">D</div>
           <span className="l-logo-name">DevBoard</span>
         </div>
-
-        
         <a href="#signup" className="l-nav-cta">Sign in</a>
       </nav>
 
-      {/* HERO */}
       <section className="l-hero">
         <div className="l-hero-glow" />
         <div className="l-hero-inner">
 
-          {/* LEFT */}
           <div className="l-hero-left">
             <div className="l-badge">
               <span className="l-badge-dot" />
@@ -55,20 +57,14 @@ export default function Landing({ onLogin }) {
               DevDash connects to your GitHub repositories and gives you a clean
               dashboard to track, prioritize, and ship projects — without the noise.
             </p>
-            <div className="l-chips">
-              <div className="l-chip"><span>⬡</span> GitHub repos</div>
-              <div className="l-chip"><span>▦</span> Kanban boards</div>
-              <div className="l-chip"><span>◎</span> Priority tracking</div>
-              <div className="l-chip"><span>⊞</span> Live dashboard</div>
-            </div>
           </div>
-
 
           <div className="l-card" id="signup">
             <div className="l-card-label">Get started</div>
             <div className="l-card-heading">Create your account</div>
             <div className="l-card-sub">Free forever. No credit card needed.</div>
 
+            {/* NAME */}
             <div className="l-field">
               <label>Full name</label>
               <input
@@ -81,6 +77,7 @@ export default function Landing({ onLogin }) {
               {errors.name && <span className="l-err-msg">{errors.name}</span>}
             </div>
 
+            {/* EMAIL */}
             <div className="l-field">
               <label>Email address</label>
               <input
@@ -91,6 +88,19 @@ export default function Landing({ onLogin }) {
                 className={errors.email ? "l-input-err" : ""}
               />
               {errors.email && <span className="l-err-msg">{errors.email}</span>}
+            </div>
+
+            {/* PASSWORD (ADDED) */}
+            <div className="l-field">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className={errors.password ? "l-input-err" : ""}
+              />
+              {errors.password && <span className="l-err-msg">{errors.password}</span>}
             </div>
 
             <button
