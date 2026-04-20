@@ -108,22 +108,6 @@ export default function Landing({ onLogin }) {
         </div>
       </section>
 
-
-      <div className="l-stats">
-        {[
-          { num: "12k+",  lbl: "Developers"    },
-          { num: "80k+",  lbl: "Repos tracked" },
-          { num: "99.9%", lbl: "Uptime"        },
-          { num: "4.9/5", lbl: "Avg rating"    },
-        ].map(s => (
-          <div key={s.lbl} className="l-stat">
-            <div className="l-stat-num">{s.num}</div>
-            <div className="l-stat-lbl">{s.lbl}</div>
-          </div>
-        ))}
-      </div>
-
-
     </div>
   );
 }
